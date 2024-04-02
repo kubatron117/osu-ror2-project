@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_02_141113) do
   create_table "account_login_change_keys", force: :cascade do |t|
     t.string "key", null: false
     t.string "login", null: false
@@ -38,6 +38,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
     t.integer "status", default: 1, null: false
     t.string "email", null: false
     t.string "password_hash"
+    t.string "first_name"
+    t.string "last_name"
+    t.date "birthdate"
+    t.string "address"
+    t.string "phone"
+    t.string "member_code"
+    t.string "role"
     t.index ["email"], name: "index_accounts_on_email", unique: true, where: "status IN (1, 2)"
   end
 
@@ -91,13 +98,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
   create_table "fire_department_memberships", force: :cascade do |t|
     t.date "start_date"
     t.integer "fire_department_id", null: false
-    t.integer "member_id", null: false
+    t.integer "account_id", null: false
     t.integer "role"
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_fire_department_memberships_on_account_id"
     t.index ["fire_department_id"], name: "index_fire_department_memberships_on_fire_department_id"
-    t.index ["member_id"], name: "index_fire_department_memberships_on_member_id"
   end
 
   create_table "fire_departments", force: :cascade do |t|
@@ -108,19 +115,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["district_id"], name: "index_fire_departments_on_district_id"
-  end
-
-  create_table "members", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
-    t.date "birthdate"
-    t.string "address"
-    t.string "email"
-    t.string "phone"
-    t.string "member_code"
-    t.string "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "regions", force: :cascade do |t|
@@ -137,7 +131,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "districts", "regions"
+  add_foreign_key "fire_department_memberships", "accounts"
   add_foreign_key "fire_department_memberships", "fire_departments"
-  add_foreign_key "fire_department_memberships", "members"
   add_foreign_key "fire_departments", "districts"
 end
