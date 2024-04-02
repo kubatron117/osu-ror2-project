@@ -6,7 +6,7 @@ class FireDepartmentMembership < ApplicationRecord
   enum status: { active: 0, archived: 1 }
 
   validates :start_date, presence: true
-  validates :role, presence: true, inclusion: { in: role.keys }
-  validates :status, presence: true, inclusion: { in: status.keys }
+  validates :role, presence: true, inclusion: { in: roles.keys }
+  validates :status, presence: true, inclusion: { in: statuses.keys }
 end
 

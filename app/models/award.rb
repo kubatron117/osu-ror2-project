@@ -7,7 +7,8 @@ class Award < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 100 }
   validates :award_kind, presence: true, inclusion: { in: award_kinds.keys }
-  validates :minimum_service_years, numericality: { greater_than_or_equal_to: 0 }
-  validates :minimum_age_for_award, numericality: { greater_than_or_equal_to: 0 }
+  validates :dependent_on_award, presence: true, allow_blank: true
+  validates :minimum_service_years, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :minimum_age_for_award, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end
 
