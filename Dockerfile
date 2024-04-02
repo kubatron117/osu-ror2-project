@@ -20,3 +20,5 @@ COPY . .
 
 # Spuštění serveru
 CMD ["rails", "server", "-b", "0.0.0.0"]
+#CMD ["/app/start.sh"]
+#CMD ["./start.sh"]

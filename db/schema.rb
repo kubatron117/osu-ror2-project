@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_02_122338) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_02_123146) do
   create_table "account_login_change_keys", force: :cascade do |t|
     t.string "key", null: false
     t.string "login", null: false
@@ -69,10 +69,75 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_122338) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "awards", force: :cascade do |t|
+    t.string "name"
+    t.integer "award_kind"
+    t.integer "dependent_on_award"
+    t.integer "minimum_service_years"
+    t.integer "minimum_age_for_award"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "districts", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.integer "region_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["region_id"], name: "index_districts_on_region_id"
+  end
+
+  create_table "fire_department_memberships", force: :cascade do |t|
+    t.date "start_date"
+    t.integer "fire_department_id", null: false
+    t.integer "member_id", null: false
+    t.integer "role"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fire_department_id"], name: "index_fire_department_memberships_on_fire_department_id"
+    t.index ["member_id"], name: "index_fire_department_memberships_on_member_id"
+  end
+
+  create_table "fire_departments", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.integer "district_id", null: false
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["district_id"], name: "index_fire_departments_on_district_id"
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.date "birthdate"
+    t.string "address"
+    t.string "email"
+    t.string "phone"
+    t.string "member_code"
+    t.string "role"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "regions", force: :cascade do |t|
+    t.string "name"
+    t.string "code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "account_login_change_keys", "accounts", column: "id"
   add_foreign_key "account_password_reset_keys", "accounts", column: "id"
   add_foreign_key "account_remember_keys", "accounts", column: "id"
   add_foreign_key "account_verification_keys", "accounts", column: "id"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "districts", "regions"
+  add_foreign_key "fire_department_memberships", "fire_departments"
+  add_foreign_key "fire_department_memberships", "members"
+  add_foreign_key "fire_departments", "districts"
 end
