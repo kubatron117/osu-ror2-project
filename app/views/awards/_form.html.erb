@@ -18,12 +18,12 @@
 
   <div class="my-5">
     <%= form.label :award_kind %>
-    <%= form.number_field :award_kind, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.select :award_kind, Award.award_kinds.keys.map { |key| [key.humanize, key] }, {prompt: 'Select Award Kind'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">
     <%= form.label :dependent_on_award %>
-    <%= form.number_field :dependent_on_award, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.collection_select :dependent_on_award, Award.all, :id, :name, {include_blank: 'None'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">

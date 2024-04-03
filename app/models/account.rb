@@ -15,4 +15,9 @@ class Account < ApplicationRecord
   validates :phone, presence: true, uniqueness: true
   validates :member_code, presence: true, uniqueness: true
   validates :role, presence: true
+
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

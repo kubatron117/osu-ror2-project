@@ -23,7 +23,7 @@
 
   <div class="my-5">
     <%= form.label :district_id %>
-    <%= form.text_field :district_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.collection_select :district_id, District.all, :id, :name, {prompt: 'Select a District'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">

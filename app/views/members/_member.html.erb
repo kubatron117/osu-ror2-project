@@ -6,7 +6,7 @@
 
   <p class="my-5">
     <strong class="block font-medium mb-1">Datum narození:</strong>
-    <%= member.birthdate %>
+    <%= member.birthdate.strftime("%d.%m.%Y") if member.birthdate != nil %>
   </p>
 
   <p class="my-5">

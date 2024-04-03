@@ -18,22 +18,22 @@
 
   <div class="my-5">
     <%= form.label :fire_department_id %>
-    <%= form.text_field :fire_department_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.collection_select :fire_department_id, FireDepartment.all, :id, :name, {prompt: 'Select a Fire Department'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">
     <%= form.label :member_id %>
-    <%= form.text_field :member_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.collection_select :account_id, Account.all, :id, :full_name, {prompt: 'Select a Member'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">
     <%= form.label :role %>
-    <%= form.number_field :role, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.select :role, FireDepartmentMembership.roles.map { |key, value| [key.humanize, key] }, {prompt: 'Select a Role'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="my-5">
     <%= form.label :status %>
-    <%= form.number_field :status, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.select :status, FireDepartmentMembership.statuses.map { |key, value| [key.humanize, key] }, {prompt: 'Select a Status'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
   </div>
 
   <div class="inline">
