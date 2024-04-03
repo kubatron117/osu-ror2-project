@@ -1,7 +1,7 @@
 <div id="<%= dom_id fire_department_membership %>">
   <p class="my-5">
     <strong class="block font-medium mb-1">Start date:</strong>
-    <%= fire_department_membership.start_date %>
+    <%= fire_department_membership.start_date.strftime("%d.%m.%Y") if fire_department_membership.start_date != nil %>
   </p>
 
   <p class="my-5">

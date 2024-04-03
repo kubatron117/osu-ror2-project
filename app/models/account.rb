@@ -4,7 +4,7 @@ class Account < ApplicationRecord
 
   has_many :fire_department_memberships
   has_many :fire_departments, through: :fire_department_memberships
-  has_many :awards, dependent: :destroy
+  has_and_belongs_to_many :awards
 
   enum role: { nothing: 0, superadmin: 1}
 

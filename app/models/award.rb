@@ -1,7 +1,8 @@
 class Award < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :dependent_on_award, class_name: 'Award', optional: true
-  has_one_attached :image
+  has_one_attached :image, dependent: :destroy
+  has_and_belongs_to_many :accounts
 
   enum award_kind: { acknowledgement: 0, medal: 1, magnitude: 2 }
 

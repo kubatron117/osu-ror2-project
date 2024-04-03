@@ -1,5 +1,5 @@
 class Region < ApplicationRecord
-  has_many :districts, dependent: :destroy
+  has_many :districts
 
   before_validation :upcase_code
 

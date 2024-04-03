@@ -1,6 +1,6 @@
 class District < ApplicationRecord
   belongs_to :region
-  has_many :fire_departments, dependent: :destroy
+  has_many :fire_departments
 
   before_validation :upcase_code
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_02_141113) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_03_145800) do
   create_table "account_login_change_keys", force: :cascade do |t|
     t.string "key", null: false
     t.string "login", null: false
@@ -46,6 +46,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_141113) do
     t.string "member_code"
     t.string "role"
     t.index ["email"], name: "index_accounts_on_email", unique: true, where: "status IN (1, 2)"
+  end
+
+  create_table "accounts_awards", id: false, force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "award_id", null: false
   end
 
   create_table "active_storage_attachments", force: :cascade do |t|
