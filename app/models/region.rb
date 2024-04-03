@@ -6,6 +6,11 @@ class Region < ApplicationRecord
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :code, presence: true, uniqueness: true, length: { maximum: 10 }
 
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["name", "code"]
+  end
+
   private
 
   def upcase_code
