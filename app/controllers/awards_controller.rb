@@ -64,7 +64,8 @@ class AwardsController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
-    def award_params
-      params.require(:award).permit(:name, :award_kind, :dependent_on_award, :minimum_service_years, :minimum_age_for_award)
-    end
+  def award_params
+    params.require(:award).permit(:name, :award_kind, :minimum_service_years, :minimum_age_for_award, :image, :dependent_on_award_id)
+  end
+
 end

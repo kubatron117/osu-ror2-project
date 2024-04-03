@@ -79,7 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_02_141113) do
   create_table "awards", force: :cascade do |t|
     t.string "name"
     t.integer "award_kind"
-    t.integer "dependent_on_award"
+    t.integer "dependent_on_award_id"
     t.integer "minimum_service_years"
     t.integer "minimum_age_for_award"
     t.datetime "created_at", null: false
