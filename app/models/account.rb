@@ -1,15 +1,15 @@
 class Account < ApplicationRecord
   include Rodauth::Model(RodauthMain)
+  enum :status, unverified: 1, verified: 2, closed: 3
 
   has_many :fire_department_memberships
   has_many :fire_departments, through: :fire_department_memberships
   has_many :awards, dependent: :destroy
 
-  enum :status, unverified: 1, verified: 2, closed: 3
   enum role: { nothing: 0, superadmin: 1}
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :first_name, presence: true, length: { maximum: 70 }
+  validates :last_name, presence: true, length: { maximum: 70 }
   validates :birthdate, presence: true
   validates :address, length: { maximum: 255 }, allow_blank: true
   validates :phone, presence: true, uniqueness: true

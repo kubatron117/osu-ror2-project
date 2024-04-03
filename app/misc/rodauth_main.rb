@@ -4,7 +4,7 @@ class RodauthMain < Rodauth::Rails::Auth
   configure do
     # List of authentication features that are loaded.
     enable :create_account, :verify_account, :verify_account_grace_period,
-      :login, :logout, :remember, :json,
+      :login, :logout, :remember,
       :reset_password, :change_password, :change_password_notify,
       :change_login, :verify_login_change, :close_account, :argon2
 
@@ -27,20 +27,13 @@ class RodauthMain < Rodauth::Rails::Auth
 
     # The secret key used for hashing public-facing tokens for various features.
     # Defaults to Rails `secret_key_base`, but you can use your own secret key.
-    # hmac_secret "0d880d5a7a5dafd1329145f61c366f35b95dd8f223a76c7617aeded29209f818318b928e74dfaaf2582b6f92579310ffc376ab1225eb9e5d31f7eedb85459d51"
+    # hmac_secret "008f5db130e1512e0e3c05131f190b8893bf93d03b746bc709ba79c8e353bed8ff47395dc8ff03b121028835fdb65166f704f2391332e686c576d64aea7916b6"
 
     # Use a rotatable password pepper when hashing passwords with Argon2.
     # argon2_secret { hmac_secret }
 
     # Since we're using argon2, prevent loading the bcrypt gem to save memory.
     require_bcrypt? false
-
-    # Accept only JSON requests.
-    only_json? true
-
-    # Handle login and password confirmation fields on the client side.
-    # require_password_confirmation? false
-    # require_login_confirmation? false
 
     # Use path prefix for all routes.
     # prefix "/auth"
@@ -58,7 +51,7 @@ class RodauthMain < Rodauth::Rails::Auth
     account_password_hash_column :password_hash
 
     # Set password when creating account instead of when verifying.
-    verify_account_set_password? false
+    verify_account_set_password? true
 
     # Change some default param keys.
     login_param "email"
@@ -107,8 +100,12 @@ class RodauthMain < Rodauth::Rails::Auth
     end
 
     # ==> Flash
+    # Match flash keys with ones already used in the Rails app.
+    # flash_notice_key :success # default is :notice
+    # flash_error_key :error # default is :alert
+
     # Override default flash messages.
-    # create_account_notice_flash "Your account has been created. Please verify your account by visiting the confirmation link sent to your email address."
+    #create_account_notice_flash "Your account has been created. Please verify your account by visiting the confirmation link sent to your email address."
     # require_login_error_flash "Login is required for accessing this page"
     # login_notice_flash nil
 
@@ -161,6 +158,39 @@ class RodauthMain < Rodauth::Rails::Auth
     # after_close_account do
     #   Profile.find_by!(account_id: account_id).destroy
     # end
+
+    # ==> Redirects
+    # Redirect to home page after logout.
+    logout_redirect "/"
+
+    # Redirect to wherever login redirects to after account verification.
+    verify_account_redirect { login_redirect }
+
+    # Redirect to login page after password reset.
+    reset_password_redirect { login_path }
+
+    # Ensure requiring login follows login route changes.
+    require_login_redirect { login_path }
+
+    # before_create_account do
+    #   throw_error_status(422, "first_name", "must be present") if param("first_name").empty?
+    #   throw_error_status(422, "last_name", "must be present") if param("last_name").empty?
+    #   throw_error_status(422, "member_code", "must be present") if param("member_code").empty?
+    #   throw_error_status(422, "role", "must be present") if param("role").empty?
+    #   throw_error_status(422, "birthdate", "must be present") if param("birthdate").empty?
+    #   throw_error_status(422, "address", "must be present") if param("address").empty?
+    #   throw_error_status(422, "phone", "must be present") if param("phone").empty?
+    # end
+
+    before_create_account do
+      account[:first_name] = param("first_name")
+      account[:last_name] = param("last_name")
+      account[:member_code] = param("member_code")
+      account[:role] = param("role")
+      account[:birthdate] = param("birthdate")
+      account[:address] = param("address")
+      account[:phone] = param("phone")
+    end
 
     # ==> Deadlines
     # Change default deadlines for some actions.
