@@ -1,4 +1,4 @@
-<%= form_with(model: fire_department_membership, class: "contents") do |form| %>
+<%= simple_form_for(fire_department_membership, html: { class: "contents" }) do |form| %>
   <% if fire_department_membership.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(fire_department_membership.errors.count, "error") %> prohibited this fire_department_membership from being saved:</h2>
@@ -12,31 +12,27 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :start_date %>
-    <%= form.date_field :start_date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.input :start_date, label: "Start Date", as: :date, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :fire_department_id %>
-    <%= form.collection_select :fire_department_id, FireDepartment.all, :id, :name, {prompt: 'Select a Fire Department'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <%= form.input :fire_department_id, collection: FireDepartment.all, label: "Fire Department", label_method: :name, value_method: :id, include_blank: 'Select a Fire Department', class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :member_id %>
-    <%= form.collection_select :account_id, Account.all, :id, :full_name, {prompt: 'Select a Member'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <% #TODO: v members napsat metodu, která vybere jen některé řádky %>
+    <%= form.input :account_id, collection: Account.all, label: "Member", label_method: :full_name, value_method: :id, include_blank: 'Select a Member', class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :role %>
-    <%= form.select :role, FireDepartmentMembership.roles.map { |key, value| [key.humanize, key] }, {prompt: 'Select a Role'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <%= form.input :role, label: "Role", collection: FireDepartmentMembership.roles.keys.map { |key| [key.humanize, key] }, include_blank: 'Select a Role', class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :status %>
-    <%= form.select :status, FireDepartmentMembership.statuses.map { |key, value| [key.humanize, key] }, {prompt: 'Select a Status'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <%= form.input :status, label: "Status", collection: FireDepartmentMembership.statuses.keys.map { |key| [key.humanize, key] }, include_blank: 'Select a Status', class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Save", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

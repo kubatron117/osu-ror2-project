@@ -65,6 +65,6 @@ class FireDepartmentMembershipsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def fire_department_membership_params
-      params.require(:fire_department_membership).permit(:start_date, :fire_department_id, :member_id, :role, :status)
+      params.require(:fire_department_membership).permit(:start_date, :fire_department_id, :account_id, :role, :status)
     end
 end

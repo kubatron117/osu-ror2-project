@@ -1,47 +1,40 @@
-<%= form_with(model: award, class: "contents") do |form| %>
+<%= simple_form_for award, html: { class: "contents" } do |form| %>
   <% if award.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(award.errors.count, "error") %> prohibited this award from being saved:</h2>
-
       <ul>
-        <% award.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% award.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
   <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.input :name, required: true, label: "Name" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :award_kind %>
-    <%= form.select :award_kind, Award.award_kinds.keys.map { |key| [key.humanize, key] }, {prompt: 'Select Award Kind'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <%= form.input :award_kind, collection: Award.award_kinds.keys.map { |key| [key.humanize, key] }, prompt: 'Select Award Kind', label: "Award Kind" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :dependent_on_award_id %>
-    <%= form.collection_select :dependent_on_award_id, Award.all, :id, :name, {include_blank: 'None'}, {class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full"} %>
+    <%= form.input :dependent_on_award_id, collection: Award.where.not(id: award.id), label_method: :name, value_method: :id, include_blank: 'None', label: "Dependent on Award" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :minimum_service_years %>
-    <%= form.number_field :minimum_service_years, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.input :minimum_service_years, label: "Minimum Service Years" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :minimum_age_for_award %>
-    <%= form.number_field :minimum_age_for_award, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.input :minimum_age_for_award, label: "Minimum Age for Award" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :image %>
-    <%= form.file_field :image, direct_upload: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.input :image, as: :file, direct_upload: true, label: "Image" %>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.button :submit, class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>

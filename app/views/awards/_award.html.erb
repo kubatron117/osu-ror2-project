@@ -26,7 +26,7 @@
 
   <div class="my-5">
     <strong class="block font-medium mb-1">Image:</strong>
-    <%= image_tag url_for(award.image), class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full max-w-[600px] max-h-[300px]" if award.image.attached? %>
+    <%= image_tag url_for(award.image), class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full max-w-[600px] max-h-[300px] object-cover" if award.image.attached? %>
   </div>
 
   <% if action_name != "show" %>

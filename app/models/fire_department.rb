@@ -3,7 +3,16 @@ class FireDepartment < ApplicationRecord
   has_many :fire_department_memberships
   has_many :accounts, through: :fire_department_memberships
 
+  before_validation :upcase_code
+
   validates :name, presence: true, uniqueness: true, length: { maximum: 100 }
   validates :code, presence: true, uniqueness: true, length: { maximum: 10 }
   validates :address, presence: true, length: { maximum: 255 }
+  validates :district_id, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true  }
+
+  private
+
+  def upcase_code
+    self.code = code.upcase if code.present?
+  end
 end

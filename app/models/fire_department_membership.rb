@@ -8,5 +8,20 @@ class FireDepartmentMembership < ApplicationRecord
   validates :start_date, presence: true
   validates :role, presence: true, inclusion: { in: roles.keys }
   validates :status, presence: true, inclusion: { in: statuses.keys }
+  validates :fire_department_id, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true  }
+  validates :account_id, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true  }
+
+  validate :validate_active_account
+
+  private
+
+  def validate_active_account
+    return unless account_id.present?
+
+    existing_active_membership = FireDepartmentMembership.find_by(account_id: account_id, status: :active)
+    if status == 'active' && existing_active_membership && existing_active_membership.id != id
+      errors.add(:account_id, "can't have more than one active membership")
+    end
+  end
 end
 
