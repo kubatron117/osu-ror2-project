@@ -9,7 +9,7 @@ class RodauthApp < Rodauth::Rails::App
     rodauth.load_memory # autologin remembered users
 
     r.rodauth # route rodauth requests
-    rodauth.require_account
+    #rodauth.require_account
 
 
 

@@ -12,8 +12,8 @@ class Account < ApplicationRecord
   validates :last_name, presence: true, length: { maximum: 70 }
   validates :birthdate, presence: true
   validates :address, length: { maximum: 255 }, allow_blank: true
-  validates :phone, presence: true, uniqueness: true
-  validates :member_code, presence: true, uniqueness: true
+  # validates :phone, presence: true, uniqueness: true
+  # validates :member_code, presence: true, uniqueness: true
   validates :role, presence: true
 
 
