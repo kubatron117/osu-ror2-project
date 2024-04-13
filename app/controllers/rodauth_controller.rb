@@ -6,9 +6,9 @@ class RodauthController < ApplicationController
 
 
 
-  private
-
-  def skip_authentication?
-    request.path.include?('/verify-account')
-  end
+  # private
+  #
+  # # def skip_authentication?
+  # #   request.path.include?('/verify-account')
+  # # end
 end
