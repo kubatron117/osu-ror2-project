@@ -3,7 +3,8 @@ class AwardsController < ApplicationController
 
   # GET /awards or /awards.json
   def index
-    @awards = Award.all
+    @q = Award.ransack(params[:q])
+    @awards = @q.result.page(params[:page])
   end
 
   # GET /awards/1 or /awards/1.json

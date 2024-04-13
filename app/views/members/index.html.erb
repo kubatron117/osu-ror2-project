@@ -65,7 +65,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.first_name %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.last_name %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.email %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.birthdate %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.birthdate.strftime('%d.%m.%Y') %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.phone %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.member_code %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= member.role %></td>
