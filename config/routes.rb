@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :awards
+  resources :account_awards
   resources :fire_department_memberships
   resources :fire_departments
   resources :districts
