@@ -15,4 +15,8 @@ class FireDepartment < ApplicationRecord
   def upcase_code
     self.code = code.upcase if code.present?
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["code", "name", "address", "district_id"]
+  end
 end

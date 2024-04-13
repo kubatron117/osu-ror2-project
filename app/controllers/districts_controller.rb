@@ -3,7 +3,8 @@ class DistrictsController < ApplicationController
 
   # GET /districts or /districts.json
   def index
-    @districts = District.all
+    @q = District.ransack(params[:q])
+    @districts = @q.result.page(params[:page])
   end
 
   # GET /districts/1 or /districts/1.json

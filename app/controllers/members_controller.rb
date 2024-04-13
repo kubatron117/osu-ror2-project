@@ -3,7 +3,10 @@ class MembersController < ApplicationController
 
   # GET /members
   def index
-    @members = Account.all
+    @q = Account.select(:id, :status, :email, :first_name, :last_name, :birthdate, :address,
+                        :phone, :member_code, :role).ransack(params[:q])
+    @members = @q.result.page(params[:page])
+    #TODO: role not selecting
   end
 
   # GET /members/:id

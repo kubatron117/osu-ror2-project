@@ -3,7 +3,8 @@ class FireDepartmentsController < ApplicationController
 
   # GET /fire_departments or /fire_departments.json
   def index
-    @fire_departments = FireDepartment.all
+    @q = FireDepartment.ransack(params[:q])
+    @fire_departments = @q.result.page(params[:page])
   end
 
   # GET /fire_departments/1 or /fire_departments/1.json

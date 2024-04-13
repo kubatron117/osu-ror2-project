@@ -25,4 +25,8 @@ class Account < ApplicationRecord
     ["address", "birthdate", "email", "first_name", "id", "last_name", "member_code" "phone", "role", "status"]
   end
 
+  def self.ransackable_associations(auth_object = nil)
+    ["awards", "fire_department_memberships", "fire_departments"]
+  end
+
 end

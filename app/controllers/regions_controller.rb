@@ -4,7 +4,7 @@ class RegionsController < ApplicationController
   # GET /regions or /regions.json
   def index
     @q = Region.ransack(params[:q])
-    @regions = @q.result(distinct: true).page(params[:page])
+    @regions = @q.result.page(params[:page])
   end
 
   # GET /regions/1 or /regions/1.json
