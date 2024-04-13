@@ -20,4 +20,9 @@ class Account < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["address", "birthdate", "email", "first_name", "id", "last_name", "member_code" "phone", "role", "status"]
+  end
+
 end

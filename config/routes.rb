@@ -4,11 +4,12 @@ Rails.application.routes.draw do
   resources :fire_departments
   resources :districts
   resources :regions
-  resources :members
+  resources :members, only: [:index, :show]
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :members
+      resources :fire_departments, only: [:index, :show]
     end
   end
 

@@ -1,5 +1,4 @@
 class MembersController < ApplicationController
-  skip_before_action :verify_authenticity_token
   before_action :set_member, only: [:show]
 
   # GET /members
@@ -12,18 +11,18 @@ class MembersController < ApplicationController
   end
 
   # POST /members
-  def create
-    ActiveRecord::Base.transaction do
-      RodauthApp.rodauth.create_account(login: member_params[:email])
-      account = Account.find_by(email: member_params[:email])
-      if account.update(member_params.except(:email))
-        render json: { message: "User created successfully. Verification email has been sent." }, status: :created
-      else
-        render json: { error: account.errors.full_messages }, status: :unprocessable_entity
-        raise ActiveRecord::Rollback
-      end
-    end
-  end
+  # def create
+  #   ActiveRecord::Base.transaction do
+  #     RodauthApp.rodauth.create_account(login: member_params[:email])
+  #     account = Account.find_by(email: member_params[:email])
+  #     if account.update(member_params.except(:email))
+  #       render json: { message: "User created successfully. Verification email has been sent." }, status: :created
+  #     else
+  #       render json: { error: account.errors.full_messages }, status: :unprocessable_entity
+  #       raise ActiveRecord::Rollback
+  #     end
+  #   end
+  # end
 
   private
 
