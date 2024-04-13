@@ -53,7 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_145800) do
     t.string "address"
     t.string "phone"
     t.string "member_code"
-    t.string "role"
+    t.integer "role"
     t.index ["email"], name: "index_accounts_on_email", unique: true, where: "status IN (1, 2)"
   end
 

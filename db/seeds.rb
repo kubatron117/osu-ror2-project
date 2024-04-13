@@ -1,22 +1,72 @@
-# Vytvoření regionů
-praha = Region.create!(name: 'Hlavní město Praha', code: 'PRG')
-jihomoravsky = Region.create!(name: 'Jihomoravský kraj', code: 'JHM')
+# db/seeds.rb
+require 'faker'
 
-# Vytvoření okresů
-okres_praha = District.create!(name: 'Praha', code: 'PHA', region: praha)
-okres_brno = District.create!(name: 'Brno-město', code: 'BM', region: jihomoravsky)
+regions_data = [
+  { name: 'Hlavní město Praha', code: 'PRG' },
+  { name: 'Jihomoravský kraj', code: 'JHM' },
+  { name: 'Jihočeský kraj', code: 'JHC' },
+  { name: 'Vysočina', code: 'VYS' },
+  { name: 'Karlovarský kraj', code: 'KVK' },
+  { name: 'Královéhradecký kraj', code: 'KHK' },
+  { name: 'Liberecký kraj', code: 'LBK' },
+  { name: 'Moravskoslezský kraj', code: 'MSK' },
+  { name: 'Olomoucký kraj', code: 'OLK' },
+  { name: 'Pardubický kraj', code: 'PAK' },
+  { name: 'Plzeňský kraj', code: 'PLK' },
+  { name: 'Středočeský kraj', code: 'STC' },
+  { name: 'Ústecký kraj', code: 'ULK' },
+  { name: 'Zlínský kraj', code: 'ZLK' }
+]
 
-# Vytvoření SDH
-sdh_praha = FireDepartment.create!(name: 'SDH Praha', code: 'SDHPRG', district: okres_praha, address: 'Náměstí Republiky 1, Praha')
-sdh_brno = FireDepartment.create!(name: 'SDH Brno', code: 'SDHJHM', district: okres_brno, address: 'Zelný trh 8, Brno')
+regions = regions_data.map do |region|
+  Region.create!(name: region[:name], code: region[:code])
+end
 
-# Vytvoření účtů (předpokládá se, že hesla a další povinné polí pro autentizaci budou nastaveny jinde)
-account_jan = Account.create!(first_name: 'Jan', last_name: 'Novák', birthdate: '1990-05-15', address: '', phone: '123456789', member_code: 'MN001', role: 'superadmin', email: 'jan@example.com', status: :verified, password: 'heslo123!')
-account_anna = Account.create!(first_name: 'Anna', last_name: 'Svobodová', birthdate: '1985-03-22', address: '', phone: '987654321', member_code: 'MN002', role: 'nothing', email: 'anna@example.com', status: :verified, password: 'heslo123!')
+FireDepartment.destroy_all
+regions.each do |region|
+  3.times do |i|
+    district = District.create!(name: "#{region.name} Okres #{i + 1}", code: "#{region.code}#{i + 1}", region: region)
+    2.times do |j|
+      FireDepartment.create!(name: "SDH #{district.name} Jednotka #{j + 1}", code: "#{district.code}#{j + 1}", district: district, address: Faker::Address.street_address)
+    end
+  end
+end
 
-# Vytvoření členství v SDH
-FireDepartmentMembership.create!(start_date: Date.today, fire_department: sdh_praha, account: account_jan, role: 'admin', status: 'active')
-FireDepartmentMembership.create!(start_date: Date.today - 1.year, fire_department: sdh_brno, account: account_anna, role: 'member', status: 'active')
+20.times do
+  Account.create!(
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    birthdate: Faker::Date.between(from: '1970-01-01', to: '2000-01-01'),
+    address: Faker::Address.full_address,
+    phone: Faker::PhoneNumber.phone_number,
+    member_code: Faker::Lorem.unique.characters(number: 6),
+    role: Account.roles.keys.sample,
+    email: Faker::Internet.unique.email,
+    status: Account.statuses.keys.sample,
+    password: 'heslo123!'
+  )
+end
 
-# Vytvoření ocenění
-award = Award.create!(name: 'Zlatá medaile za zásluhy', award_kind: :medal, minimum_service_years: 5, minimum_age_for_award: 30)
+Account.all.each do |account|
+  fire_department = FireDepartment.order(Arel.sql('RANDOM()')).first
+  FireDepartmentMembership.create!(
+    start_date: Faker::Date.backward(days: 365 * rand(1..5)),
+    fire_department: fire_department,
+    account: account,
+    role: FireDepartmentMembership.roles.keys.sample,
+    status: FireDepartmentMembership.statuses.keys.sample
+  )
+end
+
+5.times do |i|
+  award = Award.create!(
+    name: "Ocenění #{i + 1}",
+    award_kind: Award.award_kinds.keys.sample,
+    dependent_on_award_id: nil,
+    minimum_service_years: rand(1..10),
+    minimum_age_for_award: rand(18..50)
+  )
+  Account.all.sample(5).each do |account|
+    AccountAward.create!(account: account, award: award)
+  end
+end

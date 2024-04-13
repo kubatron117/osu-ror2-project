@@ -6,7 +6,6 @@ class MembersController < ApplicationController
     @q = Account.select(:id, :status, :email, :first_name, :last_name, :birthdate, :address,
                         :phone, :member_code, :role).ransack(params[:q])
     @members = @q.result.page(params[:page])
-    #TODO: role not selecting
   end
 
   # GET /members/:id
@@ -30,7 +29,8 @@ class MembersController < ApplicationController
   private
 
   def set_member
-    @member = Account.find(params[:id])
+    @member = Account.where(params[:id]).select(:id, :status, :email, :first_name, :last_name, :birthdate, :address,
+                                                :phone, :member_code, :role).first
   end
 
   def member_params

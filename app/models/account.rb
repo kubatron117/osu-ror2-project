@@ -16,7 +16,7 @@ class Account < ApplicationRecord
   validates :address, length: { maximum: 255 }, allow_blank: true
   validates :phone, presence: true, uniqueness: true
   validates :member_code, presence: true, uniqueness: true
-  validates :role, presence: true
+  validates :role, presence: true, inclusion: { in: roles.keys }
 
 
   def full_name
@@ -26,7 +26,7 @@ class Account < ApplicationRecord
   private
 
   def self.ransackable_attributes(auth_object = nil)
-    ["address", "birthdate", "email", "first_name", "id", "last_name", "member_code" "phone", "role", "status", "full_name"]
+    ["address", "birthdate", "email", "first_name", "id", "last_name", "member_code", "phone", "role", "status", "full_name"]
   end
 
   def self.ransackable_associations(auth_object = nil)

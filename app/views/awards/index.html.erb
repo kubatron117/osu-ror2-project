@@ -22,7 +22,7 @@
       </div>
       <div class="w-full md:w-1/6">
         <%= f.label :dependent_on_award_id_eq, "Dependent on Award:", class: "sr-only" %>
-        <%= f.collection_select :dependent_on_award_id_eq, Award.all, :id, :name, { include_blank: "Any Award"}, { class:  "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } %>
+        <%= f.collection_select :dependent_on_award_id_eq, Award.all, :id, :name, { include_blank: "Not dependent"}, { class:  "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } %>
       </div>
       <div class="w-full md:w-1/6">
         <%= f.number_field :minimum_service_years_gteq, placeholder: "Min service years ≥", class: "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
