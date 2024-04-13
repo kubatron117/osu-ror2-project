@@ -13,19 +13,14 @@ class MembersController < ApplicationController
 
   # POST /members
   def create
-    member_data = member_params
-
-    puts "Member data:"
-    puts member_data.inspect
-    # member_data[:birthdate] = Date.parse(member_data[:birthdate]) if member_data[:birthdate].present?
-
     ActiveRecord::Base.transaction do
-      RodauthApp.rodauth.create_account(login: member_data[:email])
-      account = Account.find_by(email: member_data[:email])
-      if account.update(member_data.except(:email))
+      RodauthApp.rodauth.create_account(login: member_params[:email])
+      account = Account.find_by(email: member_params[:email])
+      if account.update(member_params.except(:email))
         render json: { message: "User created successfully. Verification email has been sent." }, status: :created
       else
         render json: { error: account.errors.full_messages }, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
       end
     end
   end
