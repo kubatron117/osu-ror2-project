@@ -11,25 +11,24 @@ class MembersController < ApplicationController
   def show
   end
 
-  # # POST /members
-  # def create
-  #   member_data = member_params
-  #
-  #   create_account_result = RodauthApp.rodauth.create_account(login: member_data[:email])
-  #
-  #   if create_account_result[:status] == 'success'
-  #     account = Account.find_by(email: member_data[:email])
-  #     if account.update(member_data.except(:email))
-  #       render json: { message: "User created successfully. Verification email has been sent." }, status: :created
-  #     else
-  #       render json: { error: account.errors.full_messages }, status: :unprocessable_entity
-  #     end
-  #   else
-  #     render json: { error: create_account_result[:error] || "Failed to create user." }, status: :unprocessable_entity
-  #   end
-  # rescue => e
-  #   render json: { error: e.message }, status: :internal_server_error
-  # end
+  # POST /members
+  def create
+    member_data = member_params
+
+    puts "Member data:"
+    puts member_data.inspect
+    # member_data[:birthdate] = Date.parse(member_data[:birthdate]) if member_data[:birthdate].present?
+
+    ActiveRecord::Base.transaction do
+      RodauthApp.rodauth.create_account(login: member_data[:email])
+      account = Account.find_by(email: member_data[:email])
+      if account.update(member_data.except(:email))
+        render json: { message: "User created successfully. Verification email has been sent." }, status: :created
+      else
+        render json: { error: account.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+  end
 
   private
 
