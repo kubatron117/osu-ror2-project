@@ -1,6 +1,6 @@
 class District < ApplicationRecord
   belongs_to :region
-  has_many :fire_departments
+  has_many :fire_departments, dependent: :restrict_with_error
 
   before_validation :upcase_code
 
