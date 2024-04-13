@@ -16,13 +16,14 @@ class AccountAwardsController < ApplicationController
   end
 
   def create
-    @account_award = AccountAward.new(account_award_params)
-    if @account_award.save
-      redirect_to account_awards_path, notice: 'Award was successfully added to the member.'
-    else
+    if account_award_params[:account_id].blank? || account_award_params[:award_id].blank?
       @accounts = Account.all
       @awards = Award.all
-      render :new
+      flash.now[:alert] = 'You must select both an account and an award.'
+      render :new, status: :unprocessable_entity
+    else
+      AddAwardToMemberJob.perform_later(account_award_params)
+      redirect_to account_awards_path, notice: 'The award is being added to the member. This might take a few moments.'
     end
   end
 
