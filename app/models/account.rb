@@ -2,9 +2,9 @@ class Account < ApplicationRecord
   include Rodauth::Model(RodauthMain)
   enum :status, unverified: 1, verified: 2, closed: 3
 
-  has_many :fire_department_memberships
+  has_many :fire_department_memberships, dependent: :destroy
   has_many :fire_departments, through: :fire_department_memberships
-  has_and_belongs_to_many :awards
+  has_and_belongs_to_many :awards, dependent: :destroy
 
   enum role: { nothing: 0, superadmin: 1}
 
