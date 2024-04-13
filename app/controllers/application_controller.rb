@@ -9,4 +9,13 @@ class ApplicationController < ActionController::Base
   def authenticate
     rodauth.require_account
   end
+
+
+  def authenticate_by_token
+    token = ENV["API_SECRET_TOKEN"]
+
+    authenticate_or_request_with_http_token do |received_token, options|
+      ActiveSupport::SecurityUtils.secure_compare(received_token, token)
+    end
+  end
 end

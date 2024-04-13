@@ -1,5 +1,5 @@
 class Api::V1::MembersController < ApplicationController
-  before_action :authenticate
+  before_action :authenticate_by_token
   skip_before_action :verify_authenticity_token
   before_action :set_member, only: [:show, :update, :destroy]
 
@@ -49,14 +49,6 @@ class Api::V1::MembersController < ApplicationController
   end
 
   private
-
-  def authenticate
-    token = ENV["API_SECRET_TOKEN"]
-
-    authenticate_or_request_with_http_token do |received_token, options|
-      ActiveSupport::SecurityUtils.secure_compare(received_token, token)
-    end
-  end
 
   def set_member
     @member = Account.where(id: params[:id]).select(:id, :status, :email, :first_name, :last_name, :birthdate,
