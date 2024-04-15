@@ -12,15 +12,15 @@
 
   <%= search_form_for @q, url: members_path, class: "mb-5" do |f| %>
     <div class="flex flex-wrap items-center gap-x-2">
-      <div class="w-full sm:w-1/2 lg:w-1/4">
+      <div class="w-1/4">
         <%= f.label :first_name_or_last_name_cont, "Search by name:", class: "sr-only" %>
         <%= f.search_field :first_name_or_last_name_cont, placeholder: "Search by name...", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
       </div>
-      <div class="w-full sm:w-1/2 lg:w-1/4">
+      <div class="w-1/4">
         <%= f.label :email_cont, "Search by email:", class: "sr-only" %>
         <%= f.search_field :email_cont, placeholder: "Search by email...", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
       </div>
-      <div class="w-full sm:w-1/2 lg:w-1/4">
+      <div class="w-1/4">
         <%= f.label :status_eq, "Filter by status:", class: "sr-only" %>
         <%= f.collection_select :status_eq, Account.statuses.map { |k, v| [k.humanize, v] }, :last, :first, { include_blank: "Any Status" }, { class: "shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" } %>
       </div>

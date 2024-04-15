@@ -28,18 +28,26 @@
     </div>
     <div class="items-center block w-full mt-2 text-center lg:flex lg:flex-row lg:flex-1 lg:mt-0 lg:text-left lg:justify-end">
       <div>
-        <%# More links can go here %>
-        <%= link_to "Kraje", regions_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <%= link_to "Okresy", districts_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <%= link_to "SDH", fire_departments_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <!-- TODO: add controller for it-->
-        <%= link_to "Členové", members_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <%= link_to "Členství v SDH", fire_department_memberships_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <%= link_to "Ocenění", awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-        <%= link_to "Ocenění hasiči", account_awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-
         <% if rodauth.logged_in? %>
-          <%= link_to "Logout", rodauth.logout_path, method: :post, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+        <%# More links can go here %>
+          <%= link_to "Kraje", regions_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Okresy", districts_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "SDH", fire_departments_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <!-- TODO: add controller for it-->
+          <%= link_to "Členové", members_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Členství v SDH", fire_department_memberships_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Ocenění", awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Ocenění hasiči", account_awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+
+          <div class="dropdown inline-block relative">
+            <span class="rounded-lg shadow-md bg-gray-100 py-2 px-4 inline-flex items-center cursor-pointer">
+              <span class="mr-1"><%= current_account.first_name + " " + current_account.last_name %></span>
+            </span>
+            <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+              <li><%= link_to "Logout", rodauth.logout_path, method: :post, class: "rounded-t-lg bg-gray-100 hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" %></li>
+              <li><%= link_to "Change Password", rodauth.change_password_path, class: "bg-gray-100 hover:bg-gray-200 py-2 px-4 block whitespace-no-wrap" %></li>
+            </ul>
+          </div>
         <% end %>
       </div>
     </div>
