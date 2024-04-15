@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :fire_departments
   resources :districts
   resources :regions
-  resources :members, only: [:index, :show]
+  resources :members
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do

@@ -1,3 +1,4 @@
+<!-- app/views/members/show.html.erb -->
 <div class="mx-auto md:w-2/3 w-full flex">
   <div class="mx-auto">
     <% if notice.present? %>
@@ -6,9 +7,30 @@
 
     <%= render partial: 'members/member', object: @member %>
 
-    <%#= link_to "Upravit tohoto člena", edit_account_path(@member), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <h2 class="text-lg font-bold mt-5">Získaná ocenění:</h2>
+    <ul>
+      <% @earned_awards.each do |award| %>
+        <li><%= award.name %></li>
+      <% end %>
+    </ul>
+
+    <h2 class="text-lg font-bold mt-5">Ocenění, na která má nárok:</h2>
+    <ul>
+      <% @eligible_awards.each do |award| %>
+        <li><%= award.name %>, vyžaduje minimálně <%= award.minimum_service_years %> let služby</li>
+      <% end %>
+    </ul>
+
+    <h2 class="text-lg font-bold mt-5">Hasičská oddělení a datum nástupu:</h2>
+    <ul>
+      <% @fire_department_memberships.each do |membership| %>
+        <li><%= membership.fire_department.name %> - Nástup: <%= membership.start_date.strftime('%d. %m. %Y') %></li>
+      <% end %>
+    </ul>
+
+    <%= link_to 'Edit', edit_member_path(@member), class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <div class="inline-block ml-2">
-      <%#= button_to "Smazat tohoto člena", account_path(@member), method: :delete, data: { confirm: "Jste si jistí?" }, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+      <%= button_to 'Delete', member_path(@member), method: :delete, data: { confirm: 'Are you sure?' }, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
     </div>
     <%= link_to "Zpět na členy", members_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
   </div>
