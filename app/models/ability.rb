@@ -1,48 +1,31 @@
-# frozen_string_literal: true
-
 class Ability
   include CanCan::Ability
 
-  def initialize(user)
-    # Define abilities for the user here. For example:
-    #
-    #   return unless user.present?
-    #   can :read, :all
-    #   return unless user.admin?
-    #   can :manage, :all
-    #
-    # The first argument to `can` is the action you are giving the user
-    # permission to do.
-    # If you pass :manage it will apply to every action. Other common actions
-    # here are :read, :create, :update and :destroy.
-    #
-    # The second argument is the resource the user can perform the action on.
-    # If you pass :all it will apply to every resource. Otherwise pass a Ruby
-    # class of the resource.
-    #
-    # The third argument is an optional hash of conditions to further filter the
-    # objects.
-    # For example, here the user can only update published articles.
-    #
-    #   can :update, Article, published: true
-    #
-    # See the wiki for details:
-    # https://github.com/CanCanCommunity/cancancan/blob/develop/docs/define_check_abilities.md
-  end
+  def initialize(account)
+    # Alias pro zjednodušení syntaxe
+    alias_action :create, :read, :update, :destroy, to: :crud
 
-  def nothing
-    can :read, Account
-  end
 
-  def superadmin
+    cannot :manage, :all
 
-  end
+    return unless account.present?
 
-  def member
+    puts "Current role: #{account.role}"
 
-  end
+    if account.role == 'superadmin'
+      can :manage, :all
+    elsif account.role == 'nothing'
+      can :read, Region
 
-  def admin
+      if account.fire_department_memberships.exists?(role: :admin, status: :active)
+        fire_department_ids = account.fire_department_memberships.where(role: :admin, status: :active).pluck(:fire_department_id)
+        can :manage, FireDepartmentMembership, fire_department_id: fire_department_ids
+        can :manage, Account, fire_department_memberships: { fire_department_id: fire_department_ids }
+        # can :read, Account
+        cannot :update_role, Account
+      end
+    end
 
+    # Další role a jejich oprávnění můžete definovat zde
   end
 end

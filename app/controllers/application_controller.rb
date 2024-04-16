@@ -1,4 +1,11 @@
 class ApplicationController < ActionController::Base
+
+  protected
+
+  def current_ability
+    @current_ability ||= ::Ability.new(current_account)
+  end
+
   private
 
   def current_account

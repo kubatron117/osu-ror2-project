@@ -1,10 +1,12 @@
 class RegionsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_region, only: %i[ show edit update destroy ]
 
   # GET /regions or /regions.json
   def index
     @q = Region.ransack(params[:q])
     @regions = @q.result.page(params[:page])
+    authorize! :read, Region
   end
 
   # GET /regions/1 or /regions/1.json

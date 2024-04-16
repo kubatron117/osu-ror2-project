@@ -1,11 +1,13 @@
 class MembersController < ApplicationController
+  load_and_authorize_resource :class => "Account"
   before_action :set_member, only: [:show, :edit, :update, :destroy]
 
   # GET /members
   def index
     @q = Account.select(:id, :status, :email, :first_name, :last_name, :birthdate, :address,
                         :phone, :member_code, :role).ransack(params[:q])
-    @members = @q.result.page(params[:page])
+    # @members = @q.result.page(params[:page])
+    @members = @q.result.accessible_by(current_ability).page(params[:page])
   end
 
   # GET /members/:id
@@ -26,10 +28,15 @@ class MembersController < ApplicationController
     end
 
     @fire_department_memberships = @member.fire_department_memberships.includes(:fire_department)
+    # authorize! :read, @member
+    # authorize! :read, @earned_awards
+    # authorize! :read, @earned_awards
+    # authorize! :read, @eligible_awards
+    # authorize! :read, @fire_department_memberships
   end
 
   def edit
-
+    # authorize! :edit, @member
   end
 
   # PUT /members/:id
@@ -40,12 +47,14 @@ class MembersController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+    # authorize! :update, @member
   end
 
   # DELETE /members/:id
   def destroy
     @member.destroy
     redirect_to members_url, notice: 'Člen byl úspěšně smazán.'
+    # authorize! :destroy, @member
   end
 
 

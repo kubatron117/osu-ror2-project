@@ -1,4 +1,5 @@
 class DistrictsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_district, only: %i[ show edit update destroy ]
 
   # GET /districts or /districts.json

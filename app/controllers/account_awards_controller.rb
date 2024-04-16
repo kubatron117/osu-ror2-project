@@ -1,4 +1,5 @@
 class AccountAwardsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_account_award, only: [:show, :edit, :update, :destroy]
 
   def index

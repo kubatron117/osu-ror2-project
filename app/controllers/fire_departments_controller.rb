@@ -1,4 +1,5 @@
 class FireDepartmentsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_fire_department, only: %i[ show edit update destroy ]
 
   # GET /fire_departments or /fire_departments.json
