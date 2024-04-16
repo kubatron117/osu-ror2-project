@@ -188,8 +188,6 @@ class RodauthMain < Rodauth::Rails::Auth
     # end
 
     before_create_account do
-      puts "internal_request? #{internal_request?}"
-
       unless internal_request?
         temp_account = Account.new
         temp_account.first_name = param("first_name")
@@ -199,8 +197,6 @@ class RodauthMain < Rodauth::Rails::Auth
         temp_account.birthdate = param("birthdate")
         temp_account.address = param("address")
         temp_account.phone = param("phone")
-
-        puts "valid: #{temp_account.valid?}"
 
         if temp_account.valid?
           account[:first_name] = param("first_name")

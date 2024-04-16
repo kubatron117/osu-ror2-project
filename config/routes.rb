@@ -22,5 +22,5 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root "fire_departments#index"
+  root "members#index"
 end
