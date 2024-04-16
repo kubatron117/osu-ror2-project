@@ -1,4 +1,5 @@
 class Api::V1::FireDepartmentsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :authenticate_by_token
   before_action :set_fire_department, only: %i[ show ]
 

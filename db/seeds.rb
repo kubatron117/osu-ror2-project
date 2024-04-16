@@ -50,7 +50,7 @@ end
 Account.all.each do |account|
   fire_department = FireDepartment.order(Arel.sql('RANDOM()')).first
   FireDepartmentMembership.create!(
-    start_date: Faker::Date.backward(days: 365 * rand(1..5)),
+    start_date: Faker::Date.backward(days: 365 * rand(10..15)),
     fire_department: fire_department,
     account: account,
     role: FireDepartmentMembership.roles.keys.sample,
@@ -63,8 +63,8 @@ end
     name: "Ocenění #{i + 1}",
     award_kind: Award.award_kinds.keys.sample,
     dependent_on_award_id: nil,
-    minimum_service_years: rand(1..10),
-    minimum_age_for_award: rand(18..50)
+    minimum_service_years: 0,
+    minimum_age_for_award: 0
   )
   Account.all.sample(5).each do |account|
     AccountAward.create!(account: account, award: award)

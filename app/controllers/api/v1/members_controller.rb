@@ -1,6 +1,6 @@
 class Api::V1::MembersController < ApplicationController
-  before_action :authenticate_by_token
   skip_before_action :verify_authenticity_token
+  before_action :authenticate_by_token
   before_action :set_member, only: [:show, :update, :destroy]
 
   # GET /members

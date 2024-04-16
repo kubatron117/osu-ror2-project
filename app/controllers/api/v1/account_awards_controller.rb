@@ -1,4 +1,5 @@
 class Api::V1::AccountAwardsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :authenticate_by_token
   before_action :set_account, only: [:show]
 
