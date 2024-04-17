@@ -5,7 +5,7 @@ application up and running.
 
 Things you may want to cover:
 
-* How to start project:
+* How to start(run) project:
   * docker-compose build
   * docker-compose up
   * ./db.sh (setup db)
@@ -22,7 +22,7 @@ Things you may want to cover:
 * Database creation
 
 * Database initialization
-  * ./db.sh (need to docker-compose be up)
+  * ./db.sh (need to be docker-compose up)
 
 * How to run the test suite
   * .rails.sh rspec spec/models 
@@ -34,21 +34,33 @@ Things you may want to cover:
 * Deployment instructions
 
 ## Domácí úloha:
-1. řešeno - soubor_name:row_number
-2. řešeno - soubor_name:row_number
+1. řešeno - /app/models
+2. řešeno - /app/controllers/api/v1
+   * token - app/controllers/application_controller.rb:21
+   1. řešeno - /app/controllers/api/v1/fire_departments_controller.rb
+   2. řešeno - app/controllers/api/v1/members_controller.rb
 3. řešeno - soubor_name:row_number
+   1. řešeno - spec/models
+   2. řešeno - spec/requests/api/v1
 
 ## Projekt:
-1. řešeno - soubor_name:row_number
-   1. řešeno - soubor_name:row_number
+1. Prezentace
 2. řešeno - soubor_name:row_number
-3. řešeno - soubor_name:row_number
-4. řešeno - soubor_name:row_number
-5. řešeno - soubor_name:row_number
-6. řešeno - soubor_name:row_number
-7. řešeno - soubor_name:row_number
-8. řešeno - soubor_name:row_number
-9. řešeno - soubor_name:row_number
+  1. řešeno - app/views
+3. řešeno - pomocí ransack
+4. řešeno - db/seeds.rb
+5. řešeno - app/controllers/account_awards_controller.rb:26
+6. řešeno - app/views/regions/index.html.erb:40
+7. řešeno - app/services/add_award_to_member_service.rb
+   1. řešeno - app/services/add_award_to_member_service.rb
+   2. řešeno - spec/services/add_award_to_member_service_spec.rb
+8. řešeno - app/controllers/api/v1/account_awards_controller.rb
+   1. řešeno - app/controllers/api/v1/account_awards_controller.rb
+   2. řešeno - spec/requests/api/v1/fire_departments_spec.rb
+9. řešeno
+   1. neřešeno
+   2. neřešeno
+   3. řešeno - app/javascript/controllers/index.js:13
 
 
 ### Others:
