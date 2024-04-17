@@ -42,6 +42,7 @@ gem 'kaminari', "~> 1.2.2"
 gem "rodauth-rails", "~> 1.14"
 gem 'argon2', "~> 2.3.0"
 gem 'rack-cors', '~> 2.0', '>= 2.0.2'
+gem 'cancancan', '~> 3.5.0'
 
 
 # Use Redis adapter to run Action Cable in production

@@ -1,6 +1,7 @@
+# spec/factories/regions.rb
 FactoryBot.define do
   factory :region do
-    name { "MyString" }
-    code { "MyString" }
+    name { "Default Region" }
+    code { "REG001" }
   end
 end

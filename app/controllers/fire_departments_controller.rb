@@ -1,9 +1,11 @@
 class FireDepartmentsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_fire_department, only: %i[ show edit update destroy ]
 
   # GET /fire_departments or /fire_departments.json
   def index
-    @fire_departments = FireDepartment.all
+    @q = FireDepartment.ransack(params[:q])
+    @fire_departments = @q.result.page(params[:page])
   end
 
   # GET /fire_departments/1 or /fire_departments/1.json
@@ -58,12 +60,10 @@ class FireDepartmentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_fire_department
       @fire_department = FireDepartment.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def fire_department_params
       params.require(:fire_department).permit(:name, :code, :district_id, :address)
     end

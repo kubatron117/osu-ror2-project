@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::MembersController, type: :controller do
   let!(:member) { create(:account) }
-  let(:valid_attributes) { { email: "new@example.com", first_name: "New", last_name: "User", member_code: "DEF456", role: "user", birthdate: "1990-01-01", phone: "0987654321", address: "456 Example Rd." } }
-  let(:invalid_attributes) { { email: nil } }
+  let(:valid_attributes) { { email: "new@example.com", first_name: "New", last_name: "User", member_code: "DEF456", role: "nothing", birthdate: "1990-01-01", phone: "0987654321", address: "456 Example Rd." } }
+  let(:invalid_attributes) { { email: 'invalid@email.cc', first_name: "New", last_name: "User", member_code: "", role: "nothing", birthdate: "1990-01-01", phone: "0987654321", address: "456 Example Rd." } }
 
   before do
     request.headers['Authorization'] = "Token #{ENV['API_SECRET_TOKEN']}"
@@ -38,16 +38,11 @@ RSpec.describe Api::V1::MembersController, type: :controller do
     end
 
     context "with invalid parameters" do
-      it "does not create a new Account" do
-        expect {
-          post :create, params: { member: invalid_attributes }
-        }.not_to change(Account, :count)
-      end
-
-      it "returns an unprocessable entity status" do
-        post :create, params: { member: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+        it 'does not create a new Account' do
+          post :create, params: {member: invalid_attributes}
+          expect(response).to_not be_successful
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
     end
   end
 

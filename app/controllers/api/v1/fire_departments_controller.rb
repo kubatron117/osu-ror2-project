@@ -1,5 +1,6 @@
 class Api::V1::FireDepartmentsController < ApplicationController
-  before_action :authenticate #TODO: move token methon into one place
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_by_token
   before_action :set_fire_department, only: %i[ show ]
 
   # GET /fire_departments
@@ -16,20 +17,10 @@ class Api::V1::FireDepartmentsController < ApplicationController
 
   private
 
-  def authenticate
-    token = ENV["API_SECRET_TOKEN"]
-
-    authenticate_or_request_with_http_token do |received_token, options|
-      ActiveSupport::SecurityUtils.secure_compare(received_token, token)
-    end
-  end
-
-    # Use callbacks to share common setup or constraints between actions.
     def set_fire_department
       @fire_department = FireDepartment.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def fire_department_params
       params.require(:fire_department).permit(:name, :code, :district_id, :address)
     end

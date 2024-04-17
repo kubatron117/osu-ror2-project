@@ -1,9 +1,11 @@
 class DistrictsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_district, only: %i[ show edit update destroy ]
 
   # GET /districts or /districts.json
   def index
-    @districts = District.all
+    @q = District.ransack(params[:q])
+    @districts = @q.result.page(params[:page])
   end
 
   # GET /districts/1 or /districts/1.json
@@ -58,12 +60,10 @@ class DistrictsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_district
       @district = District.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def district_params
       params.require(:district).permit(:name, :code, :region_id)
     end

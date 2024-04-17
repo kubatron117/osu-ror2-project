@@ -1,0 +1,61 @@
+<!-- app/views/members/edit.html.erb -->
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl">Editing member</h1>
+<%= simple_form_for(@member, url: member_path(@member), html: { class: "contents" }, method: :patch) do |f| %>
+  <% if @member.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg my-3">
+      <h2><%= pluralize(@member.errors.count, "error") %> prohibited this member from being saved:</h2>
+      <ul>
+        <% @member.errors.full_messages.each do |error| %>
+          <li><%= error %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= f.label :first_name %>
+    <%= f.text_field :first_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :last_name %>
+    <%= f.text_field :last_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :birthdate %>
+    <%= f.date_field :birthdate, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :phone %>
+    <%= f.text_field :phone, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :address %>
+    <%= f.text_field :address, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :member_code %>
+    <%= f.text_field :member_code, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= f.label :role %>
+    <% if can?(:update_role, @member) %>
+      <%= f.collection_select :role, Account.roles.keys.map { |role| [role.titleize, role] }, :last, :first, { prompt: 'Select a Role' }, { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" } %>
+    <% else %>
+      <div class="block shadow rounded-md border border-gray-200 px-3 py-2 mt-2 w-full">
+        <%= @member.role.titleize %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= f.button :submit, "Save", class: "mt-4 rounded-lg px-5 py-2 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
+</div>

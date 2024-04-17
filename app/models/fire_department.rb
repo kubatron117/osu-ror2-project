@@ -1,7 +1,7 @@
 class FireDepartment < ApplicationRecord
   belongs_to :district
-  has_many :fire_department_memberships
-  has_many :accounts, through: :fire_department_memberships
+  has_many :fire_department_memberships, dependent: :restrict_with_error
+  has_many :accounts, through: :fire_department_memberships, dependent: :restrict_with_error
 
   before_validation :upcase_code
 
@@ -14,5 +14,9 @@ class FireDepartment < ApplicationRecord
 
   def upcase_code
     self.code = code.upcase if code.present?
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["code", "name", "address", "district_id"]
   end
 end

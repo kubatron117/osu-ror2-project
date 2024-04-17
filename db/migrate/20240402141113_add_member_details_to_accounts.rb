@@ -6,6 +6,6 @@ class AddMemberDetailsToAccounts < ActiveRecord::Migration[7.1]
     add_column :accounts, :address, :string
     add_column :accounts, :phone, :string
     add_column :accounts, :member_code, :string
-    add_column :accounts, :role, :string
+    add_column :accounts, :role, :integer
   end
 end
