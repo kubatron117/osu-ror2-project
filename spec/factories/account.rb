@@ -8,7 +8,7 @@ FactoryBot.define do
     phone { "1234567890" }
     address { "123 Main St" }
     member_code { "ABC123" }
-    role { "admin" }
+    role { "nothing" }
     status { 1 }
   end
 end
