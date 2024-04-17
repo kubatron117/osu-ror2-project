@@ -18,6 +18,7 @@ Things you may want to cover:
   * Docker Compose
 
 * Configuration
+* create .env from .env-template
 
 * Database creation
 
