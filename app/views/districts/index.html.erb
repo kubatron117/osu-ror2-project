@@ -10,11 +10,11 @@
     <%= link_to "New District", new_district_path, class: "inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150" %>
   </div>
 
-  <%= search_form_for @q, class: "mb-5" do |f| %>
+  <%= search_form_for @q, class: "mb-5", data: { controller: 'auto-submit' } do |f| %>
     <div class="flex items-center">
       <div class="w-1/3 mr-2">
         <%= f.label :name_cont, "Search by name:", class: "sr-only" %>
-        <%= f.search_field :name_cont, placeholder: "Search by name...", class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+        <%= f.search_field :name_cont, placeholder: "Search by name...", data: { action: 'keyup->auto-submit#submit' }, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
       </div>
       <div class="w-1/3">
         <%= f.label :region_id_eq, "Filter by region:", class: "sr-only" %>
