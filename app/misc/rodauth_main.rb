@@ -193,7 +193,7 @@ class RodauthMain < Rodauth::Rails::Auth
         temp_account.first_name = param("first_name")
         temp_account.last_name = param("last_name")
         temp_account.member_code = param("member_code")
-        temp_account.role = param("role")
+        temp_account.role = Account.roles[param("role")]
         temp_account.birthdate = param("birthdate")
         temp_account.address = param("address")
         temp_account.phone = param("phone")
@@ -202,7 +202,7 @@ class RodauthMain < Rodauth::Rails::Auth
           account[:first_name] = param("first_name")
           account[:last_name] = param("last_name")
           account[:member_code] = param("member_code")
-          account[:role] = param("role")
+          account[:role] = Account.roles[param("role")]
           account[:birthdate] = param("birthdate")
           account[:address] = param("address")
           account[:phone] = param("phone")

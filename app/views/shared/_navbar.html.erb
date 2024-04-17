@@ -29,23 +29,23 @@
     <div class="items-center block w-full mt-2 text-center lg:flex lg:flex-row lg:flex-1 lg:mt-0 lg:text-left lg:justify-end">
       <% if rodauth.logged_in? %>
         <% if can?(:read, Region) %>
-          <%= link_to "Kraje", regions_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Regions", regions_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
         <% if can?(:read, District) %>
-          <%= link_to "Okresy", districts_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Districts", districts_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
         <% if can?(:read, FireDepartment) %>
           <%= link_to "SDH", fire_departments_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
         <% if can?(:read, Account) %>
-          <%= link_to "Členové", members_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Members", members_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
         <% if can?(:manage, FireDepartmentMembership) %>
-          <%= link_to "Členství v SDH", fire_department_memberships_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Members in SDH", fire_department_memberships_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
         <% if can?(:read, Award) %>
-          <%= link_to "Ocenění", awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
-          <%= link_to "Ocenění hasiči", account_awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Awards", awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
+          <%= link_to "Awarded members", account_awards_path, class: "p-3 hover:bg-gray-50 transition ease duration-300 rounded-lg text-center focus:bg-gray-100 lg:inline-block block" %>
         <% end %>
 
           <div class="dropdown inline-block relative">
