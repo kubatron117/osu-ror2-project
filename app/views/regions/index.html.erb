@@ -36,7 +36,8 @@
           </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-          <% cache ["regions_table", params[:q], params[:page]] do %>
+          <% regions_cache_key = "regions_table/#{params[:q]}/#{Region.maximum(:updated_at)}" %>
+          <% cache(regions_cache_key) do %>
             <% @regions.each do |region| %>
               <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= region.name %></td>
