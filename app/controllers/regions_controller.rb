@@ -6,7 +6,6 @@ class RegionsController < ApplicationController
   def index
     @q = Region.ransack(params[:q])
     @regions = @q.result.page(params[:page])
-    authorize! :read, Region
   end
 
   # GET /regions/1 or /regions/1.json
@@ -61,12 +60,10 @@ class RegionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_region
       @region = Region.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def region_params
       params.require(:region).permit(:name, :code)
     end
