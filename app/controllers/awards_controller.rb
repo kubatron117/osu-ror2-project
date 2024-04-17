@@ -1,9 +1,11 @@
 class AwardsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_award, only: %i[ show edit update destroy ]
 
   # GET /awards or /awards.json
   def index
-    @awards = Award.all
+    @q = Award.ransack(params[:q])
+    @awards = @q.result.page(params[:page])
   end
 
   # GET /awards/1 or /awards/1.json
@@ -58,12 +60,10 @@ class AwardsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_award
       @award = Award.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
   def award_params
     params.require(:award).permit(:name, :award_kind, :minimum_service_years, :minimum_age_for_award, :image, :dependent_on_award_id)
   end

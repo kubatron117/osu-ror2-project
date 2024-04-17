@@ -1,9 +1,11 @@
+# spec/factories/fire_department_memberships.rb
 FactoryBot.define do
   factory :fire_department_membership do
-    start_date { "2024-04-02" }
-    fire_department { nil }
-    member { nil }
-    role { 1 }
-    status { 1 }
+    fire_department
+    account
+    start_date { Date.today }
+    role { :member }  # Ensure only valid roles are used
+    status { :active }  # Ensure only valid statuses are used
   end
 end
+

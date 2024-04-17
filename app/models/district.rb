@@ -1,6 +1,6 @@
 class District < ApplicationRecord
   belongs_to :region
-  has_many :fire_departments
+  has_many :fire_departments, dependent: :restrict_with_error
 
   before_validation :upcase_code
 
@@ -13,4 +13,9 @@ class District < ApplicationRecord
   def upcase_code
     self.code = code.upcase if code.present?
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["code", "name", "region_id"]
+  end
+
 end

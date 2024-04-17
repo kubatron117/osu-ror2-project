@@ -1,5 +1,5 @@
 class Region < ApplicationRecord
-  has_many :districts
+  has_many :districts, dependent: :restrict_with_error
 
   before_validation :upcase_code
 

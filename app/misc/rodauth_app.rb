@@ -9,7 +9,10 @@ class RodauthApp < Rodauth::Rails::App
     rodauth.load_memory # autologin remembered users
 
     r.rodauth # route rodauth requests
-    #rodauth.require_account
+
+    unless r.path.start_with?("/api/v1") || r.path.start_with?("/verify-account")
+      rodauth.require_account
+    end
 
 
 

@@ -36,16 +36,19 @@
           </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
-          <% @regions.each do |region| %>
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= region.name %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= region.code %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <%= link_to "Show", region_path(region), class: "text-indigo-600 hover:text-indigo-900" %>
-                <%= link_to "Edit", edit_region_path(region), class: "ml-4 text-indigo-600 hover:text-indigo-900" %>
-                <%= link_to "Delete", region_path(region), method: :delete, data: { confirm: "Are you sure you want to delete this region?" }, class: "ml-4 text-red-600 hover:text-red-900" %>
-              </td>
-            </tr>
+          <% regions_cache_key = "regions_table/#{params[:q]}/#{Region.maximum(:updated_at)}" %>
+          <% cache(regions_cache_key) do %>
+            <% @regions.each do |region| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= region.name %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= region.code %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <%= link_to "Show", region_path(region), class: "text-indigo-600 hover:text-indigo-900" %>
+                  <%= link_to "Edit", edit_region_path(region), class: "ml-4 text-indigo-600 hover:text-indigo-900" %>
+                  <%= link_to "Delete", region_path(region), method: :delete, data: { confirm: "Are you sure you want to delete this region?" }, class: "ml-4 text-red-600 hover:text-red-900" %>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
           </tbody>
         </table>

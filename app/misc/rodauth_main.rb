@@ -182,19 +182,37 @@ class RodauthMain < Rodauth::Rails::Auth
     #   throw_error_status(422, "phone", "must be present") if param("phone").empty?
     # end
 
+    # after_create_account do
+    #   account = Account.find(account_id)
+    #   account.update!(:first_name => param("first_name"), :last_name => param("last_name"), :member_code => param("member_code"), :role => param("role"), :birthdate => param("birthdate"), :address => param("address"), :phone => param("phone"))
+    # end
+
     before_create_account do
-      account[:first_name] = param("first_name")
-      account[:last_name] = param("last_name")
-      account[:member_code] = param("member_code")
-      account[:role] = param("role")
-      account[:birthdate] = param("birthdate")
-      account[:address] = param("address")
-      account[:phone] = param("phone")
+      unless internal_request?
+        temp_account = Account.new
+        temp_account.first_name = param("first_name")
+        temp_account.last_name = param("last_name")
+        temp_account.member_code = param("member_code")
+        temp_account.role = Account.roles[param("role")]
+        temp_account.birthdate = param("birthdate")
+        temp_account.address = param("address")
+        temp_account.phone = param("phone")
+
+        if temp_account.valid?
+          account[:first_name] = param("first_name")
+          account[:last_name] = param("last_name")
+          account[:member_code] = param("member_code")
+          account[:role] = Account.roles[param("role")]
+          account[:birthdate] = param("birthdate")
+          account[:address] = param("address")
+          account[:phone] = param("phone")
+        end
+      end
     end
 
     # ==> Deadlines
     # Change default deadlines for some actions.
-    # verify_account_grace_period 3.days.to_i
+    verify_account_grace_period 0
     # reset_password_deadline_interval Hash[hours: 6]
     # verify_login_change_deadline_interval Hash[days: 2]
     # remember_deadline_interval Hash[days: 30]

@@ -1,4 +1,6 @@
-Programuji v ruby on rails a mám tyto migrace:
+Programuji v ruby on rails a mám tyto migrace, modely a kontrolery:
+
+
 class CreateRodauth < ActiveRecord::Migration[7.1]
   def change
     create_table :accounts do |t|
@@ -44,6 +46,7 @@ class CreateRodauth < ActiveRecord::Migration[7.1]
     end
   end
 end
+
 # This migration comes from active_storage (originally 20170806125915)
 class CreateActiveStorageTables < ActiveRecord::Migration[7.0]
   def change
@@ -101,6 +104,7 @@ class CreateActiveStorageTables < ActiveRecord::Migration[7.0]
       [primary_key_type, foreign_key_type]
     end
 end
+
 class CreateRegions < ActiveRecord::Migration[7.1]
   def change
     create_table :regions do |t|
@@ -111,6 +115,7 @@ class CreateRegions < ActiveRecord::Migration[7.1]
     end
   end
 end
+
 class CreateDistricts < ActiveRecord::Migration[7.1]
   def change
     create_table :districts do |t|
@@ -122,6 +127,7 @@ class CreateDistricts < ActiveRecord::Migration[7.1]
     end
   end
 end
+
 class CreateFireDepartments < ActiveRecord::Migration[7.1]
   def change
     create_table :fire_departments do |t|
@@ -134,6 +140,8 @@ class CreateFireDepartments < ActiveRecord::Migration[7.1]
     end
   end
 end
+
+
 class CreateFireDepartmentMemberships < ActiveRecord::Migration[7.1]
   def change
     create_table :fire_department_memberships do |t|
@@ -181,23 +189,15 @@ class CreateJoinTableAccountsAwards < ActiveRecord::Migration[7.1]
 end
 
 
-class ApplicationController < ActionController::Base
-  private
+Modely:
 
-  def current_account
-    rodauth.rails_account
-  end
-  helper_method :current_account
-end
-
-A mám tyto modely:
 class Account < ApplicationRecord
   include Rodauth::Model(RodauthMain)
   enum :status, unverified: 1, verified: 2, closed: 3
 
-  has_many :fire_department_memberships
+  has_many :fire_department_memberships, dependent: :destroy
   has_many :fire_departments, through: :fire_department_memberships
-  has_and_belongs_to_many :awards
+  has_and_belongs_to_many :awards, dependent: :destroy
 
   enum role: { nothing: 0, superadmin: 1}
 
@@ -213,8 +213,12 @@ class Account < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
-end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["address", "birthdate", "email", "first_name", "id", "last_name", "member_code" "phone", "role", "status"]
+  end
+
+end
 class Award < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :dependent_on_award, class_name: 'Award', optional: true
@@ -229,7 +233,6 @@ class Award < ApplicationRecord
   validates :minimum_service_years, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true  }
   validates :minimum_age_for_award, presence: true, numericality: { greater_than_or_equal_to: 0, only_integer: true  }
 end
-
 class District < ApplicationRecord
   belongs_to :region
   has_many :fire_departments
@@ -311,7 +314,520 @@ class Region < ApplicationRecord
 end
 
 
-Tady jsou gemy které používám:
+Kontrolery:
+class Api::V1::FireDepartmentsController < ApplicationController
+  before_action :authenticate #TODO: move token methon into one place
+  before_action :set_fire_department, only: %i[ show ]
+
+  # GET /fire_departments
+  def index
+    @q = FireDepartment.all.ransack(params[:q])
+    @fire_departments = @q.result
+    render json: { fire_departments: @fire_departments}
+  end
+
+  # GET /fire_departments/1
+  def show
+    render json: @fire_department
+  end
+
+  private
+
+  def authenticate
+    token = ENV["API_SECRET_TOKEN"]
+
+    authenticate_or_request_with_http_token do |received_token, options|
+      ActiveSupport::SecurityUtils.secure_compare(received_token, token)
+    end
+  end
+
+    # Use callbacks to share common setup or constraints between actions.
+    def set_fire_department
+      @fire_department = FireDepartment.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def fire_department_params
+      params.require(:fire_department).permit(:name, :code, :district_id, :address)
+    end
+end
+
+class Api::V1::MembersController < ApplicationController
+  before_action :authenticate
+  skip_before_action :verify_authenticity_token
+  before_action :set_member, only: [:show, :update, :destroy]
+
+  # GET /members
+  def index
+    @q = Account.select(:id, :status, :email, :first_name, :last_name, :birthdate, :address,
+                        :phone, :member_code, :role).ransack(params[:q])
+    @members = @q.result
+    render json: { members: @members}
+  end
+
+  # GET /members/:id
+  def show
+    render json: @member
+  end
+
+  # POST /members
+  def create
+    ActiveRecord::Base.transaction do
+      RodauthApp.rodauth.create_account(login: member_params[:email])
+      account = Account.find_by(email: member_params[:email])
+      if account.update(member_params.except(:email))
+        render json: { message: "User created successfully. Verification email has been sent." }, status: :created
+      else
+        render json: { error: account.errors.full_messages }, status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
+    end
+  end
+
+  # PUT /members/:id
+  def update
+      if @member.update(update_params)
+        render json: { message: "User updated successfully." }, status: :ok
+      else
+        render json: { error: @member.errors.full_messages }, status: :unprocessable_entity
+      end
+  end
+
+  # DELETE /members/:id
+  def destroy
+    if @member.destroy
+      render json: { message: "Account successfully deleted." }, status: :ok
+    else
+      render json: { error: "Failed to delete the account." }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def authenticate
+    token = ENV["API_SECRET_TOKEN"]
+
+    authenticate_or_request_with_http_token do |received_token, options|
+      ActiveSupport::SecurityUtils.secure_compare(received_token, token)
+    end
+  end
+
+  def set_member
+    @member = Account.where(id: params[:id]).select(:id, :status, :email, :first_name, :last_name, :birthdate,
+                                                    :address, :phone, :member_code, :role).first
+  end
+
+  def member_params
+    params.require(:member).permit(:email, :first_name, :last_name, :member_code, :role, :birthdate, :phone, :address)
+  end
+
+  def update_params
+    params.require(:member).permit(:first_name, :last_name, :member_code, :role, :birthdate, :phone, :address)
+  end
+end
+class ApplicationController < ActionController::Base
+  private
+
+  def current_account
+    rodauth.rails_account
+  end
+  helper_method :current_account
+
+  def authenticate
+    rodauth.require_account
+  end
+end
+class AwardsController < ApplicationController
+  before_action :set_award, only: %i[ show edit update destroy ]
+
+  # GET /awards or /awards.json
+  def index
+    @awards = Award.all
+  end
+
+  # GET /awards/1 or /awards/1.json
+  def show
+  end
+
+  # GET /awards/new
+  def new
+    @award = Award.new
+  end
+
+  # GET /awards/1/edit
+  def edit
+  end
+
+  # POST /awards or /awards.json
+  def create
+    @award = Award.new(award_params)
+
+    respond_to do |format|
+      if @award.save
+        format.html { redirect_to award_url(@award), notice: "Award was successfully created." }
+        format.json { render :show, status: :created, location: @award }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @award.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /awards/1 or /awards/1.json
+  def update
+    respond_to do |format|
+      if @award.update(award_params)
+        format.html { redirect_to award_url(@award), notice: "Award was successfully updated." }
+        format.json { render :show, status: :ok, location: @award }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @award.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /awards/1 or /awards/1.json
+  def destroy
+    @award.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to awards_url, notice: "Award was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_award
+      @award = Award.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+  def award_params
+    params.require(:award).permit(:name, :award_kind, :minimum_service_years, :minimum_age_for_award, :image, :dependent_on_award_id)
+  end
+
+end
+class DistrictsController < ApplicationController
+  before_action :set_district, only: %i[ show edit update destroy ]
+
+  # GET /districts or /districts.json
+  def index
+    @districts = District.all
+  end
+
+  # GET /districts/1 or /districts/1.json
+  def show
+  end
+
+  # GET /districts/new
+  def new
+    @district = District.new
+  end
+
+  # GET /districts/1/edit
+  def edit
+  end
+
+  # POST /districts or /districts.json
+  def create
+    @district = District.new(district_params)
+
+    respond_to do |format|
+      if @district.save
+        format.html { redirect_to district_url(@district), notice: "District was successfully created." }
+        format.json { render :show, status: :created, location: @district }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @district.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /districts/1 or /districts/1.json
+  def update
+    respond_to do |format|
+      if @district.update(district_params)
+        format.html { redirect_to district_url(@district), notice: "District was successfully updated." }
+        format.json { render :show, status: :ok, location: @district }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @district.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /districts/1 or /districts/1.json
+  def destroy
+    @district.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to districts_url, notice: "District was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_district
+      @district = District.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def district_params
+      params.require(:district).permit(:name, :code, :region_id)
+    end
+end
+class FireDepartmentMembershipsController < ApplicationController
+  before_action :set_fire_department_membership, only: %i[ show edit update destroy ]
+
+  # GET /fire_department_memberships or /fire_department_memberships.json
+  def index
+    @fire_department_memberships = FireDepartmentMembership.all
+  end
+
+  # GET /fire_department_memberships/1 or /fire_department_memberships/1.json
+  def show
+  end
+
+  # GET /fire_department_memberships/new
+  def new
+    @fire_department_membership = FireDepartmentMembership.new
+  end
+
+  # GET /fire_department_memberships/1/edit
+  def edit
+  end
+
+  # POST /fire_department_memberships or /fire_department_memberships.json
+  def create
+    @fire_department_membership = FireDepartmentMembership.new(fire_department_membership_params)
+
+    respond_to do |format|
+      if @fire_department_membership.save
+        format.html { redirect_to fire_department_membership_url(@fire_department_membership), notice: "Fire department membership was successfully created." }
+        format.json { render :show, status: :created, location: @fire_department_membership }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @fire_department_membership.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /fire_department_memberships/1 or /fire_department_memberships/1.json
+  def update
+    respond_to do |format|
+      if @fire_department_membership.update(fire_department_membership_params)
+        format.html { redirect_to fire_department_membership_url(@fire_department_membership), notice: "Fire department membership was successfully updated." }
+        format.json { render :show, status: :ok, location: @fire_department_membership }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @fire_department_membership.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /fire_department_memberships/1 or /fire_department_memberships/1.json
+  def destroy
+    @fire_department_membership.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to fire_department_memberships_url, notice: "Fire department membership was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_fire_department_membership
+      @fire_department_membership = FireDepartmentMembership.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def fire_department_membership_params
+      params.require(:fire_department_membership).permit(:start_date, :fire_department_id, :account_id, :role, :status)
+    end
+end
+class FireDepartmentsController < ApplicationController
+  before_action :set_fire_department, only: %i[ show edit update destroy ]
+
+  # GET /fire_departments or /fire_departments.json
+  def index
+    @fire_departments = FireDepartment.all
+  end
+
+  # GET /fire_departments/1 or /fire_departments/1.json
+  def show
+  end
+
+  # GET /fire_departments/new
+  def new
+    @fire_department = FireDepartment.new
+  end
+
+  # GET /fire_departments/1/edit
+  def edit
+  end
+
+  # POST /fire_departments or /fire_departments.json
+  def create
+    @fire_department = FireDepartment.new(fire_department_params)
+
+    respond_to do |format|
+      if @fire_department.save
+        format.html { redirect_to fire_department_url(@fire_department), notice: "Fire department was successfully created." }
+        format.json { render :show, status: :created, location: @fire_department }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @fire_department.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /fire_departments/1 or /fire_departments/1.json
+  def update
+    respond_to do |format|
+      if @fire_department.update(fire_department_params)
+        format.html { redirect_to fire_department_url(@fire_department), notice: "Fire department was successfully updated." }
+        format.json { render :show, status: :ok, location: @fire_department }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @fire_department.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /fire_departments/1 or /fire_departments/1.json
+  def destroy
+    @fire_department.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to fire_departments_url, notice: "Fire department was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_fire_department
+      @fire_department = FireDepartment.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def fire_department_params
+      params.require(:fire_department).permit(:name, :code, :district_id, :address)
+    end
+end
+class MembersController < ApplicationController
+  before_action :set_member, only: [:show]
+
+  # GET /members
+  def index
+    @members = Account.all
+  end
+
+  # GET /members/:id
+  def show
+  end
+
+  # POST /members
+  # def create
+  #   ActiveRecord::Base.transaction do
+  #     RodauthApp.rodauth.create_account(login: member_params[:email])
+  #     account = Account.find_by(email: member_params[:email])
+  #     if account.update(member_params.except(:email))
+  #       render json: { message: "User created successfully. Verification email has been sent." }, status: :created
+  #     else
+  #       render json: { error: account.errors.full_messages }, status: :unprocessable_entity
+  #       raise ActiveRecord::Rollback
+  #     end
+  #   end
+  # end
+
+  private
+
+  def set_member
+    @member = Account.find(params[:id])
+  end
+
+  def member_params
+    params.require(:member).permit(:email, :first_name, :last_name, :member_code, :role, :birthdate, :phone, :address)
+  end
+end
+class RegionsController < ApplicationController
+  before_action :set_region, only: %i[ show edit update destroy ]
+
+  # GET /regions or /regions.json
+  def index
+    @q = Region.ransack(params[:q])
+    @regions = @q.result(distinct: true).page(params[:page])
+  end
+
+  # GET /regions/1 or /regions/1.json
+  def show
+  end
+
+  # GET /regions/new
+  def new
+    @region = Region.new
+  end
+
+  # GET /regions/1/edit
+  def edit
+  end
+
+  # POST /regions or /regions.json
+  def create
+    @region = Region.new(region_params)
+
+    respond_to do |format|
+      if @region.save
+        format.html { redirect_to region_url(@region), notice: "Region was successfully created." }
+        format.json { render :show, status: :created, location: @region }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @region.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /regions/1 or /regions/1.json
+  def update
+    respond_to do |format|
+      if @region.update(region_params)
+        format.html { redirect_to region_url(@region), notice: "Region was successfully updated." }
+        format.json { render :show, status: :ok, location: @region }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @region.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /regions/1 or /regions/1.json
+  def destroy
+    @region.destroy!
+
+    respond_to do |format|
+      format.html { redirect_to regions_url, notice: "Region was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_region
+      @region = Region.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def region_params
+      params.require(:region).permit(:name, :code)
+    end
+end
+
+gemfile:
+
 source "https://rubygems.org"
 
 ruby "3.3.0"
@@ -353,7 +869,7 @@ gem 'ransack', "~> 4.1.1"
 gem 'kaminari', "~> 1.2.2"
 
 
-gem "rodauth-rails", "~> 1.13"
+gem "rodauth-rails", "~> 1.14"
 gem 'argon2', "~> 2.3.0"
 gem 'rack-cors', '~> 2.0', '>= 2.0.2'
 
@@ -408,23 +924,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-
-class MembersController < ApplicationController
-  before_action :set_member, only: [:show]
-
-  # GET /members
-  def index
-    @members = Account.all
-  end
-
-  # GET /members/:id
-  def show
-  end
-
-  private
-
-  def set_member
-    @member = Account.find(params[:id])
-  end
-end
 

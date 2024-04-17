@@ -1,10 +1,11 @@
 class RegionsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_region, only: %i[ show edit update destroy ]
 
   # GET /regions or /regions.json
   def index
     @q = Region.ransack(params[:q])
-    @regions = @q.result(distinct: true).page(params[:page])
+    @regions = @q.result.page(params[:page])
   end
 
   # GET /regions/1 or /regions/1.json
@@ -59,12 +60,10 @@ class RegionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_region
       @region = Region.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def region_params
       params.require(:region).permit(:name, :code)
     end

@@ -11,6 +11,15 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_04_03_145800) do
+  create_table "account_awards", force: :cascade do |t|
+    t.integer "account_id", null: false
+    t.integer "award_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_account_awards_on_account_id"
+    t.index ["award_id"], name: "index_account_awards_on_award_id"
+  end
+
   create_table "account_login_change_keys", force: :cascade do |t|
     t.string "key", null: false
     t.string "login", null: false
@@ -44,13 +53,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_145800) do
     t.string "address"
     t.string "phone"
     t.string "member_code"
-    t.string "role"
+    t.integer "role"
     t.index ["email"], name: "index_accounts_on_email", unique: true, where: "status IN (1, 2)"
-  end
-
-  create_table "accounts_awards", id: false, force: :cascade do |t|
-    t.integer "account_id", null: false
-    t.integer "award_id", null: false
   end
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -129,6 +133,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_03_145800) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "account_awards", "accounts"
+  add_foreign_key "account_awards", "awards"
   add_foreign_key "account_login_change_keys", "accounts", column: "id"
   add_foreign_key "account_password_reset_keys", "accounts", column: "id"
   add_foreign_key "account_remember_keys", "accounts", column: "id"

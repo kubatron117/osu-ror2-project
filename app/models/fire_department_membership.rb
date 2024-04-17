@@ -23,5 +23,13 @@ class FireDepartmentMembership < ApplicationRecord
       errors.add(:account_id, "can't have more than one active membership")
     end
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["start_date", "role", "status", "fire_department_id", "account_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["account", "fire_department"]
+  end
 end
 
