@@ -5,6 +5,11 @@ application up and running.
 
 Things you may want to cover:
 
+* How to start project:
+  * docker-compose build
+  * docker-compose up
+  * ./db.sh (setup db)
+
 * Ruby version
   * 3.3.0 
 
@@ -17,11 +22,12 @@ Things you may want to cover:
 * Database creation
 
 * Database initialization
-  * ./db.sh (need ./rails.sh to be started first)
+  * ./db.sh (need to docker-compose be up)
 
 * How to run the test suite
   * .rails.sh rspec spec/models 
-  * .rails.sh rspec spec/requests 
+  * .rails.sh rspec spec/requests/api/v1 
+  * .rails.sh rspec spec/requests/api/v1 
 
 * Services (job queues, cache servers, search engines, etc.)
 

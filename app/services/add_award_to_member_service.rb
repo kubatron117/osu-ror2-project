@@ -16,10 +16,16 @@ class AddAwardToMemberService
   def call
     return false unless valid?
 
-    AccountAward.create(account_id: @account_id, award_id: @award_id)
-  rescue ActiveRecord::RecordInvalid => e
-    errors.add(:base, "Failed to create AccountAward: #{e.message}")
-    false
+    begin
+      ActiveRecord::Base.transaction do
+        AccountAward.create!(account_id: @account_id, award_id: @award_id)
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      errors.add(:base, "Failed to create AccountAward: #{e.message}")
+      return false
+    end
+
+    true
   end
 
   private
