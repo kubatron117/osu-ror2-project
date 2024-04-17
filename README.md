@@ -39,15 +39,15 @@ Things you may want to cover:
    * token - app/controllers/application_controller.rb:21
    1. řešeno - /app/controllers/api/v1/fire_departments_controller.rb
    2. řešeno - app/controllers/api/v1/members_controller.rb
+      1. POST: {"member":{ "email": "testapi289@example.com", "first_name": "John", "last_name": "Doe", "member_code": "13202","role": 1, "birthdate": "13.04.2024", "address": "asdasd", "phone": "782527" } }
 3. řešeno - soubor_name:row_number
    1. řešeno - spec/models
    2. řešeno - spec/requests/api/v1
 
 ## Projekt:
 1. Prezentace
-2. řešeno - soubor_name:row_number
-  1. řešeno - app/views
-3. řešeno - pomocí ransack
+2. řešeno - app/views
+3. řešeno - pomocí ransack (ve všech controllers pro index a k tomu odpovídající views)
 4. řešeno - db/seeds.rb
 5. řešeno - app/controllers/account_awards_controller.rb:26
 6. řešeno - app/views/regions/index.html.erb:40
@@ -64,4 +64,7 @@ Things you may want to cover:
 
 
 ### Others:
-2024/LS - PRRR2
+School project for subject: PRRR2 - Ruby on Rails 2
+2024/LS 
+
+Author: Jakub Pryček

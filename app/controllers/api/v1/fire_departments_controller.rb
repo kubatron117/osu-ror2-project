@@ -17,12 +17,10 @@ class Api::V1::FireDepartmentsController < ApplicationController
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
     def set_fire_department
       @fire_department = FireDepartment.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def fire_department_params
       params.require(:fire_department).permit(:name, :code, :district_id, :address)
     end

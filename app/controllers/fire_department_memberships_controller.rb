@@ -61,12 +61,10 @@ class FireDepartmentMembershipsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_fire_department_membership
       @fire_department_membership = FireDepartmentMembership.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def fire_department_membership_params
       params.require(:fire_department_membership).permit(:start_date, :fire_department_id, :account_id, :role, :status)
     end

@@ -60,12 +60,10 @@ class DistrictsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_district
       @district = District.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def district_params
       params.require(:district).permit(:name, :code, :region_id)
     end
