@@ -10,6 +10,7 @@ Things you may want to cover:
   * docker-compose up
   * ./db.sh (setup db)
   * ./css.sh (to build css)
+  * Seed generuje náhodné uživatele, pro přihlášení je potřeba se přihlásit nějakým se superadminem a heslo pro něj je: heslo123!
 
 * Ruby version
   * 3.3.0 
