@@ -9,6 +9,7 @@ Things you may want to cover:
   * docker-compose build
   * docker-compose up
   * ./db.sh (setup db)
+  * ./css.sh (to build css)
 
 * Ruby version
   * 3.3.0 
