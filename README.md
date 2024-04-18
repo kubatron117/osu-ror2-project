@@ -6,9 +6,10 @@ application up and running.
 Things you may want to cover:
 
 * How to start(run) project:
+  * create .env from .env-template
   * docker-compose build
   * docker-compose up
-  * ./db.sh (setup db)
+  * ./db.sh (setup db with seed)
   * ./css.sh (to build css)
   * Seed generuje náhodné uživatele, pro přihlášení je potřeba se přihlásit nějakým se superadminem a heslo pro něj je: heslo123!
 
@@ -20,7 +21,6 @@ Things you may want to cover:
   * Docker Compose
 
 * Configuration
-* create .env from .env-template
 
 * Database creation
 
